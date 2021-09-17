@@ -18,6 +18,7 @@ with urlopen(pedido) as resposta:
     dfs = []
     medias = []
     meses = []
+    vantajosos = []
     for link in links_g:
         # Tentando ler os links como csvs
         try:
@@ -44,20 +45,19 @@ with urlopen(pedido) as resposta:
             if data == '04/2021':
                 # Agrupando por produto e estado
                 vantagem = pd.DataFrame({'Media': df.groupby(
-                    ['Estado - Sigla', 'Produto'])['Valor de Venda'].mean(
+                    ['Município', 'Produto'])['Valor de Venda'].mean(
                 )}).reset_index()
-                vantajosos = []
-                # Checando critério de vantagem
-                for estado in df['Estado - Sigla'].unique():
-                    df_estado = vantagem[vantagem['Estado - Sigla'] == estado]
-                    gasolina = df_estado[
-                        df_estado['Produto'] == 'GASOLINA'].reset_index().at[
-                        0, 'Media']
-                    etanol = df_estado[
-                        df_estado['Produto'] == 'ETANOL'].reset_index().at[
-                        0, 'Media']
+                for municipio in df['Município'].unique():
+                    df_municipio = vantagem[vantagem['Município'] == municipio]
+                    if not ('ETANOL' in df_municipio.Produto.values
+                            and 'GASOLINA' in df_municipio.Produto.values):
+                        continue
+                    gasolina = df_municipio[df_municipio['Produto']
+                                            == 'GASOLINA'].iloc[0]['Media']
+                    etanol = df_municipio[df_municipio['Produto']
+                                          == 'ETANOL'].iloc[0]['Media']
                     if etanol / gasolina < 0.7:
-                        vantajosos.append(estado)
+                        vantajosos.append(municipio)
 
             dfs.append(df)
 
