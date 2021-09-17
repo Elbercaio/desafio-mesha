@@ -82,6 +82,6 @@ print('2. Gere um gráfico em barras da média de valor da gasolina pôr mês em
 plt.show()
 print('3. No mês 04/2021, identifique qual(ais) as cidade(s) que abastecer '
       'com etanol é mais vantajoso do que gasolina?')
-print('As cidade são:')
+print('As cidades são:')
 for vantajosa in vantajosos:
     print(vantajosa)
